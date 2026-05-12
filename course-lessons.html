@@ -336,6 +336,44 @@
       color: var(--color-primary);
     }
 
+    /* ── Additional card collapse ────────────────────────────────── */
+    .additional-body {
+      overflow: hidden;
+      max-height: 2000px;
+      transition: max-height 300ms ease, opacity 200ms ease;
+      opacity: 1;
+    }
+    .additional-body--collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    /* dim the header when off */
+    #additionalCard.is-off .lesson-card__title {
+      color: var(--color-text-light);
+    }
+    #additionalCard.is-off .toggle-on-label {
+      color: var(--color-text-placeholder);
+    }
+
+    /* chevron button */
+    .btn-chevron {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--color-text-placeholder);
+      flex-shrink: 0;
+      transition: background 100ms, transform 250ms ease;
+    }
+    .btn-chevron:hover { background: var(--color-bg-darker); color: var(--color-text); }
+    .btn-chevron.is-collapsed { transform: rotate(180deg); }
+
     /* ── Lesson list ─────────────────────────────────────────────── */
     .lesson-list {
       list-style: none;
@@ -1708,13 +1746,18 @@
       <div class="lesson-card__header">
         <div class="lesson-card__title-row">
           <h2 class="lesson-card__title" id="additional-title">Additional Lessons (3)</h2>
-          <div class="toggle-row--card" style="display:flex;align-items:center;gap:8px;">
-            <label class="toggle" style="width:44px;height:24px;" aria-label="Enable additional lessons">
-              <input type="checkbox" checked />
-              <div class="toggle-track toggle-track--card" style="position:absolute;inset:0;border-radius:9999px;transition:background 160ms;"></div>
-              <div class="toggle-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:9999px;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform 160ms;transform:translateX(20px);"></div>
-            </label>
-            <span class="toggle-on-label">On</span>
+          <div style="display:flex;align-items:center;gap:var(--space-sm);">
+            <div class="toggle-row--card" style="display:flex;align-items:center;gap:8px;">
+              <label class="toggle" style="width:44px;height:24px;" aria-label="Enable additional lessons">
+                <input type="checkbox" id="additionalToggle" checked />
+                <div class="toggle-track toggle-track--card" style="position:absolute;inset:0;border-radius:9999px;transition:background 160ms;"></div>
+                <div class="toggle-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:9999px;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform 160ms;transform:translateX(20px);"></div>
+              </label>
+              <span class="toggle-on-label" id="additionalToggleLabel">On</span>
+            </div>
+            <button class="btn-chevron" id="additionalChevron" aria-label="Collapse additional lessons" aria-expanded="true" aria-controls="additionalBody">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 9l5-5 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
           </div>
         </div>
         <p class="lesson-card__desc">These are additional lessons only shown to people who answer yes to any of the survey questions <span class="tooltip-anchor" aria-describedby="survey-tooltip">
@@ -1728,6 +1771,7 @@
         <button class="btn-add">Add Lesson +</button>
       </div>
 
+      <div class="additional-body" id="additionalBody">
       <ul class="lesson-list" aria-label="Additional lessons">
 
         <li class="lesson-item lesson-item--compact">
@@ -1791,6 +1835,7 @@
         </li>
 
       </ul>
+      </div><!-- /additional-body -->
     </section>
 
   </main>
@@ -2134,6 +2179,36 @@
         this.classList.add('active');
       });
     });
+
+    // ── Additional lessons: toggle + independent collapse ─────────
+    const additionalCard    = document.getElementById('additionalCard');
+    const additionalBody    = document.getElementById('additionalBody');
+    const additionalToggle  = document.getElementById('additionalToggle');
+    const additionalLabel   = document.getElementById('additionalToggleLabel');
+    const additionalChevron = document.getElementById('additionalChevron');
+
+    let bodyExpanded = true;
+
+    function setBodyExpanded(expanded) {
+      bodyExpanded = expanded;
+      additionalBody.classList.toggle('additional-body--collapsed', !expanded);
+      additionalChevron.classList.toggle('is-collapsed', !expanded);
+      additionalChevron.setAttribute('aria-expanded', expanded);
+      additionalChevron.setAttribute('aria-label', expanded ? 'Collapse additional lessons' : 'Expand additional lessons');
+    }
+
+    // Toggle on/off
+    additionalToggle.addEventListener('change', function() {
+      const isOn = this.checked;
+      additionalCard.classList.toggle('is-off', !isOn);
+      additionalLabel.textContent = isOn ? 'On' : 'Off';
+      additionalLabel.style.color = isOn ? '' : 'var(--color-text-placeholder)';
+      // auto-collapse when turned off, auto-expand when turned on
+      setBodyExpanded(isOn);
+    });
+
+    // Chevron: independent expand/collapse regardless of toggle state
+    additionalChevron.addEventListener('click', () => setBodyExpanded(!bodyExpanded));
   </script>
 
   <!-- ── Action footer (sticky) ───────────────────────────────── -->

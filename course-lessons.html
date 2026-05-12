@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Lessons — SoSafe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Vera tokens ─────────────────────────────────────────────── */
+    :root {
+      /* colour */
+      --color-primary:            rgb(11,114,133);
+      --color-primary-hover:      rgb(1,80,95);
+      --color-primary-bg-light:   rgba(11,114,133,0.05);
+      --color-text:               rgb(33,37,41);
+      --color-text-light:         rgb(73,80,87);
+      --color-text-placeholder:   rgb(134,142,150);
+      --color-text-inverted:      rgb(255,255,255);
+      --color-text-disabled:      rgb(173,181,189);
+      --color-bg-canvas:          rgb(255,255,255);
+      --color-bg-dark:            rgb(248,249,250);
+      --color-bg-darker:          rgb(241,243,245);
+      --color-border-light:       rgb(206,212,218);
+      --color-border-dark:        rgb(134,142,150);
+      --color-success-bg:         rgb(230,252,245);
+      --color-success-text:       rgb(39,124,56);
+
+      /* spacing */
+      --space-3xs: 4px;
+      --space-2xs: 8px;
+      --space-xs:  10px;
+      --space-sm:  12px;
+      --space-md:  16px;
+      --space-lg:  24px;
+      --space-xl:  32px;
+
+      /* radius */
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   16px;
+      --radius-full: 9999px;
+
+      /* shadows */
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.01);
+      --shadow-sm: 0 7px 7px -5px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 10px -5px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04);
+
+      /* typography */
+      --font-family: 'Inter', sans-serif;
+      --font-size-xs:  12px;
+      --font-size-sm:  14px;
+      --font-size-md:  16px;
+      --font-size-lg:  18px;
+      --font-size-2xl: 24px;
+      --font-size-3xl: 32px;
+      --line-height-xs: 16px;
+      --line-height-sm: 20px;
+      --line-height-md: 24px;
+      --line-height-3xl: 40px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-md);
+      color: var(--color-text);
+      background: var(--color-bg-dark);
+      min-height: 100vh;
+    }
+
+    /* ── Top bar (sticky) ───────────────────────────────────────── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-xl);
+      height: 56px;
+      background: var(--color-bg-canvas);
+      border-bottom: 1px solid var(--color-border-light);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .top-bar__logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: -0.3px;
+      text-decoration: none;
+    }
+    .top-bar__logo svg { flex-shrink: 0; }
+
+    .top-bar__avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background: var(--color-bg-darker);
+      border: 1.5px solid var(--color-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text-light);
+      cursor: pointer;
+    }
+
+    /* ── Navigation header (scrolls with page) ──────────────────── */
+    .nav-header {
+      display: flex;
+      align-items: center;
+      padding: var(--space-md) var(--space-xl);
+      background: var(--color-bg-canvas);
+      border-bottom: 1px solid var(--color-border-light);
+      position: relative;
+    }
+
+    /* stepper centred absolutely so Leave button doesn't offset it */
+    .stepper-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .btn-leave {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      padding: 6px var(--space-sm);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg-canvas);
+      color: var(--color-text);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      line-height: var(--line-height-sm);
+      transition: background 120ms;
+    }
+    .btn-leave:hover { background: var(--color-bg-dark); }
+    .btn-leave svg { flex-shrink: 0; }
+
+    .stepper-divider {
+      flex-shrink: 0;
+      width: 32px;
+      height: 1px;
+      background: var(--color-border-light);
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      white-space: nowrap;
+    }
+
+    .step-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      line-height: 1;
+    }
+    .step-circle--done {
+      background: var(--color-primary);
+      color: var(--color-text-inverted);
+    }
+    .step-circle--active {
+      background: var(--color-bg-canvas);
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+    .step-circle--idle {
+      background: var(--color-bg-canvas);
+      color: var(--color-text-placeholder);
+      border: 1.5px solid var(--color-border-light);
+    }
+
+    .step-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      line-height: var(--line-height-sm);
+      color: var(--color-text);
+    }
+    .step-label--idle { color: var(--color-text-placeholder); }
+    .step-label--active { color: var(--color-primary); font-weight: 600; }
+
+    /* ── Hero header ─────────────────────────────────────────────── */
+    .course-header {
+      background: var(--color-primary);
+      padding: var(--space-xl) var(--space-xl) var(--space-lg);
+      position: relative;
+      text-align: center;
+    }
+
+    .course-header__meta {
+      display: inline-block;
+    }
+
+    .course-header__meta h1 {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      line-height: var(--line-height-3xl);
+      color: var(--color-text-inverted);
+      margin-bottom: var(--space-2xs);
+    }
+
+    .course-header__meta p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-sm);
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Toggle — removed from header */
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.3);
+      transition: background 160ms;
+    }
+    .toggle input:checked + .toggle-track { background: rgba(255,255,255,0.5); }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: var(--radius-full);
+      background: var(--color-text-inverted);
+      box-shadow: var(--shadow-sm);
+      transition: transform 160ms;
+    }
+    .toggle input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+    /* ── Page body ───────────────────────────────────────────────── */
+    .page-body {
+      padding: var(--space-xl);
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    /* ── Lesson cards ────────────────────────────────────────────── */
+    .lesson-card {
+      background: var(--color-bg-canvas);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .lesson-card__header {
+      padding: var(--space-lg);
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .lesson-card__title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2xs);
+    }
+
+    .lesson-card__title {
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      line-height: var(--line-height-md);
+      color: var(--color-text);
+    }
+
+    .lesson-card__desc {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-sm);
+      color: var(--color-text-light);
+      margin-bottom: var(--space-md);
+    }
+
+    /* add lesson button */
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      padding: 8px var(--space-md);
+      border-radius: var(--radius-sm);
+      background: var(--color-primary);
+      color: var(--color-text-inverted);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      line-height: var(--line-height-sm);
+      transition: background 120ms;
+    }
+    .btn-add:hover { background: var(--color-primary-hover); }
+
+    /* additional toggle row */
+    .toggle-row--card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .toggle-track--card { background: var(--color-border-light); }
+    .toggle input:checked + .toggle-track--card { background: var(--color-primary); }
+    .toggle-on-label {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    /* ── Lesson list ─────────────────────────────────────────────── */
+    .lesson-list {
+      list-style: none;
+    }
+
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-lg);
+      border-bottom: 1px solid var(--color-border-light);
+      transition: background 100ms;
+    }
+    .lesson-item:last-child { border-bottom: none; }
+    .lesson-item:hover { background: var(--color-bg-dark); }
+
+    .lesson-thumb {
+      width: 72px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      object-fit: cover;
+      background: var(--color-bg-darker);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* placeholder illustration colours cycling */
+    .lesson-thumb--1 { background: rgb(231,245,255); }
+    .lesson-thumb--2 { background: rgb(255,244,230); }
+    .lesson-thumb--3 { background: rgb(255,227,227); }
+    .lesson-thumb--4 { background: rgb(231,245,255); }
+    .lesson-thumb--5 { background: rgb(243,240,255); }
+
+    .lesson-thumb svg {
+      width: 36px;
+      height: 36px;
+      opacity: 0.6;
+    }
+
+    .lesson-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .lesson-category {
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-xs);
+      color: var(--color-text-light);
+      margin-bottom: 2px;
+    }
+
+    .lesson-title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      line-height: var(--line-height-sm);
+      color: var(--color-text);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lesson-duration {
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-xs);
+      color: var(--color-text-placeholder);
+    }
+
+    .lesson-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      flex-shrink: 0;
+    }
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--color-text-placeholder);
+      transition: background 100ms, color 100ms;
+    }
+    .btn-icon:hover {
+      background: var(--color-bg-darker);
+      color: var(--color-text);
+    }
+    .btn-icon--remove:hover {
+      background: rgb(255,227,227);
+      color: rgb(201,42,42);
+    }
+
+    /* compact lesson items in the right column */
+    .lesson-item--compact .lesson-thumb {
+      width: 60px;
+      height: 44px;
+    }
+    .lesson-item--compact .lesson-title {
+      white-space: normal;
+    }
+
+    /* ── Tooltip ─────────────────────────────────────────────────── */
+    .tooltip-anchor {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+    }
+    .tooltip-bubble {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgb(33,37,41);
+      color: rgb(255,255,255);
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-sm);
+      font-weight: 400;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 120ms;
+      z-index: 30;
+    }
+    .tooltip-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: rgb(33,37,41);
+    }
+    .tooltip-anchor:hover .tooltip-bubble,
+    .tooltip-anchor:focus-within .tooltip-bubble {
+      opacity: 1;
+    }
+
+    /* ── Dropdown menu ───────────────────────────────────────────── */
+    .menu-wrapper {
+      position: relative;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 4px);
+      z-index: 40;
+      background: var(--color-bg-canvas);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      min-width: 160px;
+      padding: var(--space-3xs) 0;
+      list-style: none;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-menu li a,
+    .dropdown-menu li button {
+      display: block;
+      width: 100%;
+      padding: 7px var(--space-md);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: 400;
+      line-height: var(--line-height-sm);
+      color: var(--color-text);
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .dropdown-menu li button:hover {
+      background: var(--color-bg-dark);
+    }
+
+    .lesson-scroll {}
+
+    /* ── Action footer (sticky) ─────────────────────────────────── */
+    .action-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
+      background: var(--color-bg-canvas);
+      border-top: 1px solid var(--color-border-light);
+      padding: var(--space-md) var(--space-xl);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-sm);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      padding: 8px var(--space-md);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg-canvas);
+      color: var(--color-text);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      border: 1px solid var(--color-border-light);
+      cursor: pointer;
+      line-height: var(--line-height-sm);
+      transition: background 120ms;
+    }
+    .btn-secondary:hover { background: var(--color-bg-dark); }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      padding: 8px var(--space-md);
+      border-radius: var(--radius-sm);
+      background: var(--color-primary);
+      color: var(--color-text-inverted);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      line-height: var(--line-height-sm);
+      transition: background 120ms;
+    }
+    .btn-primary:hover { background: var(--color-primary-hover); }
+
+    /* ── Library modal overlay ───────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--color-bg-canvas);
+      border-radius: var(--radius-md);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+      width: min(1000px, 92vw);
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* modal header */
+    .modal-header {
+      padding: var(--space-lg) var(--space-xl) var(--space-md);
+      border-bottom: 1px solid var(--color-border-light);
+      flex-shrink: 0;
+    }
+    .modal-header h2 {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      line-height: 26px;
+      color: var(--color-text);
+      margin-bottom: var(--space-3xs);
+    }
+    .modal-header p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-sm);
+      color: var(--color-text-light);
+    }
+
+    /* modal body — sidebar + grid */
+    .modal-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* sidebar */
+    .lib-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--color-border-light);
+      overflow-y: auto;
+      padding: var(--space-md) 0;
+    }
+    .lib-sidebar::-webkit-scrollbar { width: 4px; }
+    .lib-sidebar::-webkit-scrollbar-thumb { background: var(--color-border-light); border-radius: 9999px; }
+
+    .lib-sidebar--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .lib-sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px var(--space-md);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-sm);
+      color: var(--color-text);
+      cursor: pointer;
+      gap: var(--space-2xs);
+      transition: background 100ms;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-family);
+    }
+    .lib-sidebar-item:hover { background: var(--color-bg-dark); }
+    .lib-sidebar-item.active {
+      background: var(--color-primary-bg-light);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .lib-sidebar-item .check-icon { color: var(--color-primary); flex-shrink: 0; }
+
+    /* main content */
+    .lib-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* toolbar */
+    .lib-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--color-border-light);
+      flex-shrink: 0;
+      gap: var(--space-md);
+    }
+
+    .lib-select-all {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text);
+      cursor: pointer;
+      gap: 10px;
+    }
+
+    /* native checkbox styled to Vera */
+    .lib-select-all input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--color-border-dark);
+      border-radius: var(--radius-xs);
+      appearance: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      background: var(--color-bg-canvas);
+      transition: background 100ms, border-color 100ms;
+    }
+    .lib-select-all input[type="checkbox"]:checked {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    /* Chip filters */
+    .chip-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+    }
+
+    /* Vera Chip — default (inactive/outline) */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px var(--space-sm);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border-light);
+      background: var(--color-bg-canvas);
+      color: var(--color-text);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      line-height: var(--line-height-sm);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 100ms, border-color 100ms;
+      user-select: none;
+    }
+    .chip:hover { background: var(--color-bg-dark); }
+
+    /* Vera Chip — selected/active */
+    .chip--active {
+      border-color: var(--color-border-selected);
+      background: rgba(11,114,133,0.08);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .chip--active:hover { background: rgba(11,114,133,0.14); }
+
+    /* Vera Chip — disabled */
+    .chip--disabled {
+      border-color: var(--color-border-light);
+      background: var(--color-bg-darker);
+      color: var(--color-text-disabled);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .chip__dismiss {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* lesson grid */
+    .lib-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-lg);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      align-content: start;
+    }
+    .lib-grid::-webkit-scrollbar { width: 4px; }
+    .lib-grid::-webkit-scrollbar-thumb { background: var(--color-border-light); border-radius: 9999px; }
+
+    /* lesson card in library */
+    .lib-card {
+      border: 1.5px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 120ms, box-shadow 120ms;
+      position: relative;
+    }
+    .lib-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-sm); }
+    .lib-card.selected { border-color: var(--color-primary); border-width: 2px; }
+
+    /* checkbox overlay */
+    .lib-card__check {
+      position: absolute;
+      top: var(--space-2xs);
+      left: var(--space-2xs);
+      width: 18px;
+      height: 18px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: background 100ms;
+    }
+    .lib-card.selected .lib-card__check {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .lib-card__check svg { display: none; }
+    .lib-card.selected .lib-card__check svg { display: block; }
+
+    .lib-card__thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lib-card__preview {
+      position: absolute;
+      top: var(--space-2xs);
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.92);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      box-shadow: var(--shadow-xs);
+    }
+    .lib-card__preview svg { flex-shrink: 0; }
+
+    .lib-card__body {
+      padding: var(--space-sm) var(--space-md);
+    }
+    .lib-card__title {
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      line-height: var(--line-height-sm);
+      color: var(--color-text);
+    }
+
+    /* modal footer */
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-xl);
+      border-top: 1px solid var(--color-border-light);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Top bar (sticky) ────────────────────────────────────── -->
+  <div class="top-bar">
+    <a class="top-bar__logo" href="#">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect width="24" height="24" rx="6" fill="rgb(11,114,133)"/>
+        <path d="M7 12.5c0-2.485 2.015-4.5 4.5-4.5s4.5 2.015 4.5 4.5S13.985 17 11.5 17 7 14.985 7 12.5z" fill="white" opacity=".9"/>
+        <path d="M11.5 10v5M9 12.5h5" stroke="rgb(11,114,133)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      SoSafe
+    </a>
+    <div class="top-bar__avatar" aria-label="User menu">DF</div>
+  </div>
+
+  <!-- ── Navigation header (scrolls with page) ────────────────── -->
+  <div class="nav-header">
+    <button class="btn-leave">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Leave
+    </button>
+
+    <nav class="stepper-bar" aria-label="Course setup steps">
+      <!-- Step 1 — done -->
+      <div class="step" aria-current="false">
+        <div class="step-circle step-circle--done" aria-label="Step 1 complete">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="step-label">Course details</span>
+      </div>
+      <div class="stepper-divider"></div>
+
+      <!-- Step 2 — active -->
+      <div class="step" aria-current="step">
+        <div class="step-circle step-circle--active" aria-label="Step 2, current">2</div>
+        <span class="step-label step-label--active">Lessons</span>
+      </div>
+      <div class="stepper-divider"></div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-circle step-circle--idle" aria-label="Step 3">3</div>
+        <span class="step-label step-label--idle">Email notification</span>
+      </div>
+      <div class="stepper-divider"></div>
+
+      <!-- Step 4 -->
+      <div class="step">
+        <div class="step-circle step-circle--idle" aria-label="Step 4">4</div>
+        <span class="step-label step-label--idle">Reporting method</span>
+      </div>
+      <div class="stepper-divider"></div>
+
+      <!-- Step 5 -->
+      <div class="step">
+        <div class="step-circle step-circle--idle" aria-label="Step 5">5</div>
+        <span class="step-label step-label--idle">Employee login</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ── Course header ────────────────────────────────────────── -->
+  <header class="course-header">
+    <div class="course-header__meta">
+      <h1>Course One (Launch 01/01/2027)</h1>
+      <p>Course Duration: Jan 30 2026 to Dec 1st 2026</p>
+      <p>Course Audience: 343 people</p>
+    </div>
+  </header>
+
+  <!-- ── Page body ────────────────────────────────────────────── -->
+  <main class="page-body">
+
+    <!-- LEFT: Mandatory lessons -->
+    <section class="lesson-card" id="mandatoryCard" aria-labelledby="mandatory-title">
+      <div class="lesson-card__header">
+        <div class="lesson-card__title-row">
+          <h2 class="lesson-card__title" id="mandatory-title">Mandatory Lessons (24 Lessons)</h2>
+        </div>
+        <p class="lesson-card__desc">These are the lessons that are mandatory for every user assigned this course. Due dates are automatically calculated except where you have specified a due date.</p>
+        <button class="btn-add">Add Lesson +</button>
+      </div>
+
+      <div class="lesson-scroll">
+        <ul class="lesson-list" aria-label="Mandatory lessons">
+
+          <!-- Lesson items -->
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--1">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Basic Cyber Security</p>
+              <p class="lesson-title">Importance of cyber security</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--2">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+                <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+                <circle cx="15" cy="13" r="1.5" fill="white"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Basic Cyber Security</p>
+              <p class="lesson-title">Importance of cyber security</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--3">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="8" y="10" width="20" height="16" rx="2" fill="rgb(255,135,135)" opacity=".4"/>
+                <rect x="12" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <rect x="20" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <path d="M12 19h12M12 23h8" stroke="rgb(201,42,42)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Basic Cyber Security</p>
+              <p class="lesson-title">Importance of cyber security</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--4">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Basic Cyber Security</p>
+              <p class="lesson-title">Importance of cyber security</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--2">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+                <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+                <circle cx="15" cy="13" r="1.5" fill="white"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Basic Cyber Security</p>
+              <p class="lesson-title">Importance of cyber security</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--5">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="6" y="10" width="24" height="16" rx="2" fill="rgb(177,151,252)" opacity=".4"/>
+                <path d="M14 18l4-4 4 4" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 14v8" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Basic Cyber Security</p>
+              <p class="lesson-title">Importance of cyber security</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--1">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Phishing Awareness</p>
+              <p class="lesson-title">Recognising phishing emails</p>
+              <p class="lesson-duration">5 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--3">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="8" y="10" width="20" height="16" rx="2" fill="rgb(255,135,135)" opacity=".4"/>
+                <rect x="12" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <rect x="20" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <path d="M12 19h12M12 23h8" stroke="rgb(201,42,42)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Phishing Awareness</p>
+              <p class="lesson-title">Spear phishing and targeted attacks</p>
+              <p class="lesson-duration">6 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--2">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+                <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+                <circle cx="15" cy="13" r="1.5" fill="white"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Password Security</p>
+              <p class="lesson-title">Creating strong passwords</p>
+              <p class="lesson-duration">3 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--5">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="6" y="10" width="24" height="16" rx="2" fill="rgb(177,151,252)" opacity=".4"/>
+                <path d="M14 18l4-4 4 4" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 14v8" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Password Security</p>
+              <p class="lesson-title">Using a password manager</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--4">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Password Security</p>
+              <p class="lesson-title">Multi-factor authentication</p>
+              <p class="lesson-duration">5 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--2">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+                <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+                <circle cx="15" cy="13" r="1.5" fill="white"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Social Engineering</p>
+              <p class="lesson-title">What is social engineering?</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--3">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="8" y="10" width="20" height="16" rx="2" fill="rgb(255,135,135)" opacity=".4"/>
+                <rect x="12" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <rect x="20" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <path d="M12 19h12M12 23h8" stroke="rgb(201,42,42)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Social Engineering</p>
+              <p class="lesson-title">Pretexting and vishing calls</p>
+              <p class="lesson-duration">5 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--1">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Data Protection</p>
+              <p class="lesson-title">Handling personal data (GDPR)</p>
+              <p class="lesson-duration">6 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--5">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="6" y="10" width="24" height="16" rx="2" fill="rgb(177,151,252)" opacity=".4"/>
+                <path d="M14 18l4-4 4 4" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 14v8" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Data Protection</p>
+              <p class="lesson-title">Classifying sensitive information</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--2">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+                <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+                <circle cx="15" cy="13" r="1.5" fill="white"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Data Protection</p>
+              <p class="lesson-title">Safe data disposal and deletion</p>
+              <p class="lesson-duration">3 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--4">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Malware & Ransomware</p>
+              <p class="lesson-title">How malware spreads</p>
+              <p class="lesson-duration">5 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--3">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="8" y="10" width="20" height="16" rx="2" fill="rgb(255,135,135)" opacity=".4"/>
+                <rect x="12" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <rect x="20" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <path d="M12 19h12M12 23h8" stroke="rgb(201,42,42)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Malware & Ransomware</p>
+              <p class="lesson-title">Responding to a ransomware attack</p>
+              <p class="lesson-duration">6 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--1">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Safe Browsing</p>
+              <p class="lesson-title">Identifying malicious websites</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--5">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="6" y="10" width="24" height="16" rx="2" fill="rgb(177,151,252)" opacity=".4"/>
+                <path d="M14 18l4-4 4 4" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 14v8" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Safe Browsing</p>
+              <p class="lesson-title">Risks of public Wi-Fi</p>
+              <p class="lesson-duration">3 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--2">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+                <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+                <circle cx="15" cy="13" r="1.5" fill="white"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Device Security</p>
+              <p class="lesson-title">Keeping software up to date</p>
+              <p class="lesson-duration">3 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--4">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Device Security</p>
+              <p class="lesson-title">Screen locking and physical security</p>
+              <p class="lesson-duration">3 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--3">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="8" y="10" width="20" height="16" rx="2" fill="rgb(255,135,135)" opacity=".4"/>
+                <rect x="12" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <rect x="20" y="6" width="4" height="6" rx="1" fill="rgb(201,42,42)" opacity=".6"/>
+                <path d="M12 19h12M12 23h8" stroke="rgb(201,42,42)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Incident Response</p>
+              <p class="lesson-title">How to report a security incident</p>
+              <p class="lesson-duration">4 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+          <li class="lesson-item">
+            <div class="lesson-thumb lesson-thumb--1">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+                <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+                <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <p class="lesson-category">Incident Response</p>
+              <p class="lesson-title">Understanding breach notifications</p>
+              <p class="lesson-duration">5 min</p>
+            </div>
+            <div class="lesson-actions">
+              <div class="menu-wrapper">
+                <button class="btn-icon btn-menu-trigger" aria-label="More options" aria-haspopup="true" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="none"><button role="menuitem">Add due date</button></li>
+                  <li role="none"><button role="menuitem">Option Two</button></li>
+                  <li role="none"><button role="menuitem">Option Three</button></li>
+                </ul>
+              </div>
+              <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+      <div style="padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--color-border-light); display:flex; align-items:center; gap: var(--space-sm);">
+        <label class="toggle" aria-label="Hide excluded lessons from learners">
+          <input type="checkbox" />
+          <div class="toggle-track toggle-track--card"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+        <span style="font-size: var(--font-size-sm); color: var(--color-text-light); font-weight: 500;">Hide excluded lessons from learners</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: Additional lessons -->
+    <section class="lesson-card" id="additionalCard" aria-labelledby="additional-title">
+      <div class="lesson-card__header">
+        <div class="lesson-card__title-row">
+          <h2 class="lesson-card__title" id="additional-title">Additional Lessons (3)</h2>
+          <div class="toggle-row--card" style="display:flex;align-items:center;gap:8px;">
+            <label class="toggle" style="width:44px;height:24px;" aria-label="Enable additional lessons">
+              <input type="checkbox" checked />
+              <div class="toggle-track toggle-track--card" style="position:absolute;inset:0;border-radius:9999px;transition:background 160ms;"></div>
+              <div class="toggle-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:9999px;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform 160ms;transform:translateX(20px);"></div>
+            </label>
+            <span class="toggle-on-label">On</span>
+          </div>
+        </div>
+        <p class="lesson-card__desc">These are additional lessons only shown to people who answer yes to any of the survey questions <span class="tooltip-anchor" aria-describedby="survey-tooltip">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="vertical-align:-2px;flex-shrink:0;">
+            <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3" opacity=".5"/>
+            <path d="M7 6.5v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".7"/>
+            <circle cx="7" cy="4.5" r=".75" fill="currentColor" opacity=".7"/>
+          </svg>
+          <span class="tooltip-bubble" role="tooltip" id="survey-tooltip">Explain the whole survey concept here</span>
+        </span></p>
+        <button class="btn-add">Add Lesson +</button>
+      </div>
+
+      <ul class="lesson-list" aria-label="Additional lessons">
+
+        <li class="lesson-item lesson-item--compact">
+          <div class="lesson-thumb lesson-thumb--4">
+            <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+              <rect x="4" y="8" width="28" height="20" rx="3" fill="rgb(116,192,252)" opacity=".4"/>
+              <circle cx="14" cy="18" r="5" fill="rgb(34,139,230)" opacity=".7"/>
+              <path d="M22 13h6M22 18h6M22 23h4" stroke="rgb(34,139,230)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="lesson-info">
+            <p class="lesson-category">Basic Cyber Security</p>
+            <p class="lesson-title">Importance of cyber security</p>
+            <p class="lesson-duration">4 min</p>
+          </div>
+          <div class="lesson-actions">
+            <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </li>
+
+        <li class="lesson-item lesson-item--compact">
+          <div class="lesson-thumb lesson-thumb--2">
+            <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+              <ellipse cx="18" cy="22" rx="10" ry="7" fill="rgb(253,196,75)" opacity=".4"/>
+              <circle cx="18" cy="14" r="6" fill="rgb(253,126,20)" opacity=".7"/>
+              <circle cx="15" cy="13" r="1.5" fill="white"/>
+            </svg>
+          </div>
+          <div class="lesson-info">
+            <p class="lesson-category">Basic Cyber Security</p>
+            <p class="lesson-title">Importance of cyber security</p>
+            <p class="lesson-duration">4 min</p>
+          </div>
+          <div class="lesson-actions">
+            <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </li>
+
+        <li class="lesson-item lesson-item--compact">
+          <div class="lesson-thumb lesson-thumb--5">
+            <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+              <rect x="6" y="10" width="24" height="16" rx="2" fill="rgb(177,151,252)" opacity=".4"/>
+              <path d="M14 18l4-4 4 4" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 14v8" stroke="rgb(103,65,217)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="lesson-info">
+            <p class="lesson-category">Basic Cyber Security</p>
+            <p class="lesson-title">Importance of cyber security</p>
+            <p class="lesson-duration">4 min</p>
+          </div>
+          <div class="lesson-actions">
+            <button class="btn-icon btn-icon--remove" aria-label="Remove lesson">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </li>
+
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- ── Lesson library modal ────────────────────────────────── -->
+  <div class="modal-backdrop" id="libraryModal" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
+    <div class="modal">
+
+      <div class="modal-header">
+        <h2 id="libraryTitle">Lesson library</h2>
+        <p>Select the lessons you want to include in the learning path.</p>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Sidebar -->
+        <nav class="lib-sidebar" aria-label="Lesson categories">
+          <button class="lib-sidebar-item active">
+            All (103)
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="lib-sidebar-item">Fast-track cyber security training (16)</button>
+          <button class="lib-sidebar-item">Email security (9)</button>
+          <button class="lib-sidebar-item">Mobile Security (6)</button>
+          <button class="lib-sidebar-item">Internet &amp; online tools (7)</button>
+          <button class="lib-sidebar-item">Office security (9)</button>
+          <button class="lib-sidebar-item">Malicious software (4)</button>
+          <button class="lib-sidebar-item">Data privacy (8)</button>
+          <button class="lib-sidebar-item">Dangers of social engineering (4)</button>
+          <button class="lib-sidebar-item">Occupational safety (4)</button>
+          <button class="lib-sidebar-item">German general act on equal treatment (3)</button>
+          <button class="lib-sidebar-item">Compliance (4)</button>
+          <button class="lib-sidebar-item">Preventing money laundering (3)</button>
+          <button class="lib-sidebar-item">Cyber security for IT professionals (4)</button>
+        </nav>
+
+        <!-- Main -->
+        <div class="lib-main">
+
+          <div class="lib-toolbar">
+            <label class="lib-select-all">
+              <input type="checkbox" id="selectAll" />
+              Select all
+            </label>
+            <div class="chip-group">
+              <!-- inactive chip -->
+              <button class="chip" id="chipAdditional" aria-pressed="false">Additional Lessons</button>
+              <!-- active chip with dismiss -->
+              <button class="chip chip--active" id="chipStarter" aria-pressed="true">
+                Starter Lessons
+                <span class="chip__dismiss" aria-label="Remove Starter Lessons filter">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div class="lib-grid" id="libGrid">
+
+            <!-- Card 1 — brown/luggage -->
+            <div class="lib-card" data-type="standard" data-id="1">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(200,170,130),rgb(170,130,90));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><rect x="30" y="20" width="60" height="45" rx="6" fill="rgb(140,100,60)" opacity=".7"/><rect x="45" y="15" width="30" height="10" rx="3" fill="rgb(110,75,40)"/><circle cx="60" cy="43" r="12" fill="rgb(180,140,100)"/><path d="M52 43h16M60 35v16" stroke="rgb(140,100,60)" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 2 — fire/extinguisher -->
+            <div class="lib-card" data-type="standard" data-id="2">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(255,200,180),rgb(255,150,120));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><ellipse cx="40" cy="50" rx="18" ry="25" fill="rgb(220,60,40)" opacity=".8"/><rect x="37" y="20" width="6" height="10" rx="2" fill="rgb(180,40,20)"/><path d="M55 55 Q80 20 95 40" stroke="rgb(255,120,60)" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M60 30 Q70 10 85 25" stroke="rgb(255,80,40)" stroke-width="5" stroke-linecap="round" fill="none" opacity=".6"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 3 — robot/blue -->
+            <div class="lib-card" data-type="standard" data-id="3">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(210,230,250),rgb(180,210,240));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><rect x="40" y="30" width="40" height="35" rx="8" fill="rgb(140,180,220)"/><rect x="50" y="20" width="20" height="14" rx="4" fill="rgb(160,200,240)"/><circle cx="52" cy="43" r="5" fill="white" opacity=".8"/><circle cx="68" cy="43" r="5" fill="white" opacity=".8"/><path d="M25 38 Q38 30 40 40" stroke="rgb(120,160,200)" stroke-width="2" fill="none"/><path d="M95 38 Q82 30 80 40" stroke="rgb(120,160,200)" stroke-width="2" fill="none"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 4 — cat/orange -->
+            <div class="lib-card" data-type="standard" data-id="4">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(220,245,220),rgb(190,230,190));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><ellipse cx="60" cy="55" rx="22" ry="15" fill="rgb(240,160,60)" opacity=".5"/><circle cx="60" cy="40" r="18" fill="rgb(240,160,60)" opacity=".85"/><polygon points="42,26 38,10 52,22" fill="rgb(220,130,40)"/><polygon points="78,26 82,10 68,22" fill="rgb(220,130,40)"/><circle cx="54" cy="38" r="3" fill="rgb(80,40,20)"/><circle cx="66" cy="38" r="3" fill="rgb(80,40,20)"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 5 — robot tablet/blue -->
+            <div class="lib-card" data-type="standard" data-id="5">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(210,235,255),rgb(180,215,245));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><rect x="35" y="18" width="50" height="44" rx="5" fill="rgb(100,160,220)" opacity=".6"/><rect x="41" y="24" width="38" height="30" rx="3" fill="white" opacity=".7"/><rect x="45" y="28" width="30" height="4" rx="1" fill="rgb(100,160,220)" opacity=".7"/><rect x="45" y="35" width="20" height="4" rx="1" fill="rgb(100,160,220)" opacity=".5"/><rect x="45" y="42" width="25" height="4" rx="1" fill="rgb(100,160,220)" opacity=".5"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 6 — lightning/pink -->
+            <div class="lib-card" data-type="standard" data-id="6">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(255,210,210),rgb(240,180,190));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><ellipse cx="45" cy="50" rx="15" ry="22" fill="rgb(200,120,140)" opacity=".4"/><ellipse cx="75" cy="45" rx="12" ry="20" fill="rgb(160,180,220)" opacity=".5"/><ellipse cx="90" cy="50" rx="10" ry="18" fill="rgb(160,180,220)" opacity=".4"/><path d="M55 30 L48 50 L56 50 L49 65" stroke="rgb(240,180,40)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 7 — lock/teal -->
+            <div class="lib-card" data-type="standard" data-id="7">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(180,230,225),rgb(140,210,205));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><rect x="42" y="40" width="36" height="28" rx="5" fill="rgb(11,114,133)" opacity=".7"/><path d="M50 40 V32 a10 10 0 0 1 20 0 V40" stroke="rgb(11,114,133)" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="60" cy="53" r="4" fill="white" opacity=".8"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 8 — no phone/blue -->
+            <div class="lib-card" data-type="standard" data-id="8">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(215,235,255),rgb(190,220,250));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><rect x="46" y="18" width="28" height="44" rx="5" fill="rgb(100,150,220)" opacity=".6"/><rect x="51" y="25" width="18" height="28" rx="2" fill="white" opacity=".7"/><line x1="35" y1="20" x2="85" y2="68" stroke="rgb(220,50,50)" stroke-width="5" stroke-linecap="round" opacity=".8"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Card 9 — headphones/green -->
+            <div class="lib-card" data-type="standard" data-id="9">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(215,245,225),rgb(185,230,200));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><path d="M35 48 a25 25 0 0 1 50 0" stroke="rgb(50,160,100)" stroke-width="4" fill="none"/><rect x="30" y="46" width="12" height="18" rx="4" fill="rgb(50,160,100)" opacity=".7"/><rect x="78" y="46" width="12" height="18" rx="4" fill="rgb(50,160,100)" opacity=".7"/><circle cx="60" cy="42" r="10" fill="rgb(220,240,225)"/><circle cx="60" cy="42" r="5" fill="rgb(50,160,100)" opacity=".6"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Critical Security Alert: Immediate Action Required</p></div>
+            </div>
+
+            <!-- Additional card A — social media -->
+            <div class="lib-card" data-type="additional" data-id="a1">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(243,240,255),rgb(210,200,255));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><circle cx="60" cy="35" r="16" fill="rgb(103,65,217)" opacity=".5"/><circle cx="38" cy="50" r="11" fill="rgb(103,65,217)" opacity=".4"/><circle cx="82" cy="50" r="11" fill="rgb(103,65,217)" opacity=".4"/><line x1="49" y1="42" x2="38" y2="50" stroke="rgb(103,65,217)" stroke-width="2" opacity=".6"/><line x1="71" y1="42" x2="82" y2="50" stroke="rgb(103,65,217)" stroke-width="2" opacity=".6"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Social Media Security: Protecting Your Digital Identity</p></div>
+            </div>
+
+            <!-- Additional card B — work from home -->
+            <div class="lib-card" data-type="additional" data-id="a2">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(231,245,255),rgb(195,228,255));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><path d="M30 55 L60 25 L90 55 Z" fill="rgb(34,139,230)" opacity=".4"/><rect x="40" y="42" width="40" height="28" rx="2" fill="rgb(34,139,230)" opacity=".55"/><rect x="52" y="52" width="16" height="18" rx="1" fill="white" opacity=".6"/><rect x="46" y="46" width="12" height="9" rx="1" fill="white" opacity=".5"/><rect x="62" y="46" width="12" height="9" rx="1" fill="white" opacity=".5"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Secure Remote Working: Home Office Best Practices</p></div>
+            </div>
+
+            <!-- Additional card C — travel -->
+            <div class="lib-card" data-type="additional" data-id="a3">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(255,244,230),rgb(255,220,180));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><ellipse cx="60" cy="55" rx="30" ry="8" fill="rgb(196,100,30)" opacity=".3"/><rect x="40" y="28" width="40" height="28" rx="5" fill="rgb(253,126,20)" opacity=".6"/><rect x="50" y="22" width="20" height="8" rx="2" fill="rgb(196,100,30)" opacity=".7"/><circle cx="50" cy="42" r="6" fill="white" opacity=".6"/><circle cx="70" cy="42" r="6" fill="white" opacity=".6"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Travel Security: Staying Safe on Business Trips</p></div>
+            </div>
+
+            <!-- Additional card D — BYOD -->
+            <div class="lib-card" data-type="additional" data-id="a4">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(230,252,245),rgb(180,240,220));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><rect x="50" y="18" width="20" height="36" rx="4" fill="rgb(12,166,120)" opacity=".55"/><rect x="53" y="23" width="14" height="22" rx="2" fill="white" opacity=".6"/><rect x="72" y="25" width="16" height="28" rx="3" fill="rgb(12,166,120)" opacity=".4"/><rect x="32" y="28" width="16" height="22" rx="3" fill="rgb(12,166,120)" opacity=".4"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">BYOD Policy: Managing Personal Devices at Work</p></div>
+            </div>
+
+            <!-- Additional card E — insider threat -->
+            <div class="lib-card" data-type="additional" data-id="a5">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(255,227,227),rgb(255,195,195));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><circle cx="60" cy="32" r="14" fill="rgb(201,42,42)" opacity=".4"/><path d="M38 68 Q60 50 82 68" fill="rgb(201,42,42)" opacity=".35"/><path d="M52 60 L60 45 L68 60 Z" fill="rgb(201,42,42)" opacity=".5"/><circle cx="60" cy="59" r="3" fill="rgb(201,42,42)" opacity=".7"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Recognising Insider Threats and Suspicious Behaviour</p></div>
+            </div>
+
+            <!-- Additional card F — deep fake -->
+            <div class="lib-card" data-type="additional" data-id="a6">
+              <div class="lib-card__check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="lib-card__thumb" style="background:linear-gradient(135deg,rgb(241,243,245),rgb(220,226,232));height:160px;">
+                <div class="lib-card__preview"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M2 1.5l7 3.5-7 3.5V1.5z"/></svg>Preview</div>
+                <svg viewBox="0 0 120 80" width="100" aria-hidden="true"><circle cx="60" cy="36" r="18" fill="rgb(134,142,150)" opacity=".35"/><circle cx="60" cy="36" r="11" fill="rgb(134,142,150)" opacity=".5"/><rect x="38" y="56" width="44" height="14" rx="3" fill="rgb(134,142,150)" opacity=".3"/><line x1="44" y1="36" x2="76" y2="36" stroke="rgb(134,142,150)" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/></svg>
+              </div>
+              <div class="lib-card__body"><p class="lib-card__title">Deepfakes and AI-Generated Deception</p></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="libCancel">Cancel</button>
+        <button class="btn-primary" id="libApply">Apply</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Dropdown menus ────────────────────────────────────────────
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.btn-menu-trigger');
+      const allMenus = document.querySelectorAll('.dropdown-menu');
+      const allTriggers = document.querySelectorAll('.btn-menu-trigger');
+
+      if (trigger) {
+        const menu = trigger.nextElementSibling;
+        const isOpen = menu.classList.contains('open');
+        allMenus.forEach(m => m.classList.remove('open'));
+        allTriggers.forEach(t => t.setAttribute('aria-expanded', 'false'));
+        if (!isOpen) {
+          menu.classList.add('open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      } else {
+        allMenus.forEach(m => m.classList.remove('open'));
+        allTriggers.forEach(t => t.setAttribute('aria-expanded', 'false'));
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.btn-menu-trigger').forEach(t => t.setAttribute('aria-expanded', 'false'));
+        closeLibrary();
+      }
+    });
+
+    // ── Library modal ─────────────────────────────────────────────
+    const modal = document.getElementById('libraryModal');
+    const chipAdditional = document.getElementById('chipAdditional');
+    const chipStarter = document.getElementById('chipStarter');
+    const allCards = () => document.querySelectorAll('.lib-card');
+
+    function applyCardVisibility(mode) {
+      allCards().forEach(card => {
+        if (mode === 'additional') {
+          card.style.display = card.dataset.type === 'additional' ? '' : 'none';
+        } else {
+          card.style.display = card.dataset.type === 'standard' ? '' : 'none';
+        }
+      });
+    }
+
+    const sidebar = document.querySelector('.lib-sidebar');
+    const chipStarterDismiss = document.querySelector('#chipStarter .chip__dismiss');
+
+    function openLibrary(mode = 'standard') {
+      modal.classList.add('open');
+      modal.dataset.mode = mode;
+
+      if (mode === 'additional') {
+        chipAdditional.classList.add('chip--active');
+        chipAdditional.setAttribute('aria-pressed', 'true');
+        // Starter chip: disabled, no X
+        chipStarter.classList.remove('chip--active');
+        chipStarter.classList.add('chip--disabled');
+        chipStarter.setAttribute('aria-pressed', 'false');
+        chipStarterDismiss.style.display = 'none';
+        // Sidebar: disabled
+        sidebar.classList.add('lib-sidebar--disabled');
+      } else {
+        chipAdditional.classList.remove('chip--active');
+        chipAdditional.setAttribute('aria-pressed', 'false');
+        // Starter chip: active with X
+        chipStarter.classList.add('chip--active');
+        chipStarter.classList.remove('chip--disabled');
+        chipStarter.setAttribute('aria-pressed', 'true');
+        chipStarterDismiss.style.display = '';
+        // Sidebar: enabled
+        sidebar.classList.remove('lib-sidebar--disabled');
+      }
+      applyCardVisibility(mode);
+    }
+
+    function closeLibrary() { modal.classList.remove('open'); }
+
+    // Mandatory "Add Lesson +" — standard library
+    document.querySelector('#mandatoryCard .btn-add').addEventListener('click', () => openLibrary('standard'));
+
+    // Additional "Add Lesson +" — additional lessons only
+    document.querySelector('#additionalCard .btn-add').addEventListener('click', () => openLibrary('additional'));
+
+    document.getElementById('libCancel').addEventListener('click', closeLibrary);
+    document.getElementById('libApply').addEventListener('click', closeLibrary);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeLibrary(); });
+
+    // ── Card selection ────────────────────────────────────────────
+    document.getElementById('libGrid').addEventListener('click', (e) => {
+      const card = e.target.closest('.lib-card');
+      if (card) card.classList.toggle('selected');
+    });
+
+    // ── Select all ────────────────────────────────────────────────
+    document.getElementById('selectAll').addEventListener('change', (e) => {
+      const visible = [...allCards()].filter(c => c.style.display !== 'none');
+      visible.forEach(c => c.classList.toggle('selected', e.target.checked));
+    });
+
+    // ── Chip toggle ───────────────────────────────────────────────
+    chipAdditional.addEventListener('click', function() {
+      const mode = modal.dataset.mode === 'additional' ? 'standard' : 'additional';
+      openLibrary(mode);
+    });
+    chipStarter.addEventListener('click', function(e) {
+      if (e.target.closest('.chip__dismiss')) {
+        this.classList.remove('chip--active');
+        this.setAttribute('aria-pressed', 'false');
+        applyCardVisibility('standard');
+        modal.dataset.mode = 'standard';
+      }
+    });
+
+    // ── Sidebar category selection ────────────────────────────────
+    document.querySelectorAll('.lib-sidebar-item').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.lib-sidebar-item').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+
+  <!-- ── Action footer (sticky) ───────────────────────────────── -->
+  <footer class="action-footer">
+    <button class="btn-secondary">Back</button>
+    <button class="btn-primary">
+      Save and Continue
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </footer>
+
+</body>
+</html>
